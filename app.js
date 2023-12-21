@@ -1,8 +1,7 @@
-// listen to route '/hello' on port 5000
 const express = require("express");
 const app = express();
 // import routers
-const itemsRouter = require("./routes/items");
+const tasksRouter = require("./routes/tasks");
 
 // middleware
 app.use(express.json());
@@ -11,7 +10,7 @@ app.get("/", (req, res) => {
   res.status(200).send("hello world.");
 });
 
-app.use("/api/v1/items", itemsRouter);
+app.use("/api/v1/tasks", tasksRouter);
 
 const port = 5000;
 
