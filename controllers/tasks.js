@@ -16,8 +16,12 @@ const getTask = (req, res) => {
 
 // create a new task
 const createTask = async (req, res) => {
-  const taskToAdd = await Task.create(req.body);
-  res.status(201).json({ taskToAdd });
+  try {
+    const taskToAdd = await Task.create(req.body);
+    res.status(201).json({ taskToAdd });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
 };
 
 // update a single task

@@ -6,9 +6,20 @@ const mongoose = require("mongoose");
 // Syntax for Schema() constructor:
 // Schema({Obj with type definitions}[, {Obj with options}])
 // Only the properties specified in the schema will be passed on to the db, everything else will be ignored.
+
+// Mongoose validation docs: https://mongoosejs.com/docs/validation.html
+
 const TaskSchema = new mongoose.Schema({
-  name: String,
-  completed: Boolean,
+  name: {
+    type: String,
+    required: [true, "name for task must be provided."],
+    trim: true,
+    maxlength: [50, "name can not be more than 20 characters."],
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // When you call mongoose.model() on a schema, Mongoose compiles a model for you.
