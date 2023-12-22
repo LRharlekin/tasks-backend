@@ -1,6 +1,6 @@
 const Task = require("../models/Task");
 const asyncWrapper = require("../middleware/asyncWrapper");
-
+const { createCustomError } = require("../errors/custom-error");
 /* 
 Documentation for Mongoose Queries: https://mongoosejs.com/docs/queries.html
 Mongoose models provide several static helper functions for CRUD operations.
@@ -24,12 +24,16 @@ const getAllTasks = async (req, res) => {
   */
 
 // get a single task
-const getTask = asyncWrapper(async (req, res) => {
+const getTask = asyncWrapper(async (req, res, next) => {
   // Using Model.findById() query
   const { id: taskID } = req.params;
   const task = await Task.findById(taskID);
   if (!task) {
-    return res.status(404).json({ msg: `No task with id: ${taskID}` });
+    const error = createCustomError(`No task with id : ${taskID} found.`, 404);
+    // const error = new Error(`No task with id : ${taskID} found.`);
+    // error.status(404);
+    return next(error);
+    // return res.status(404).json({ msg: `No task with id: ${taskID}` });
   }
   res.status(200).json({ task });
 });
@@ -68,9 +72,8 @@ const editTask = asyncWrapper(async (req, res) => {
     overwrite: true,
   });
   if (!task) {
-    return res.status(404).json({
-      msg: `No task with ID: ${taskID} found. Database hasn\'t been updated`,
-    });
+    const error = createCustomError(`No task with id : ${taskID} found.`, 404);
+    return next(error);
   }
   res.status(200).json({ task });
 });
@@ -85,9 +88,8 @@ const updateTask = asyncWrapper(async (req, res) => {
     runValidators: true,
   });
   if (!task) {
-    return res.status(404).json({
-      msg: `No task with ID: ${taskID} found. Database hasn\'t been updated`,
-    });
+    const error = createCustomError(`No task with id : ${taskID} found.`, 404);
+    return next(error);
   }
   res.status(200).json({ task });
 });
@@ -121,9 +123,8 @@ const deleteTask = asyncWrapper(async (req, res) => {
   const { id: taskID } = req.params;
   const task = await Task.findByIdAndDelete(taskID);
   if (!task) {
-    return res
-      .status(404)
-      .json(`No task with id: ${taskID} was found. Not deleted.`);
+    const error = createCustomError(`No task with id : ${taskID} found.`, 404);
+    return next(error);
   }
   res.status(200).json({ task });
 });
