@@ -60,8 +60,44 @@ const createTask = async (req, res) => {
 };
 
 // update a single task
-const updateTask = (req, res) => {
-  res.send(`update single task with ID: ${req.params.id}`);
+const updateTask = async (req, res) => {
+  // Using Model.findByIdAndUpdate() query
+  try {
+    const { id: taskID } = req.params;
+    const task = await Task.findByIdAndUpdate(taskID, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!task) {
+      return res.status(404).json({
+        msg: `No task with ID: ${taskID} found. Database hasn\'t been updated`,
+      });
+    }
+    res.status(200).json({ task });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
+
+  /* 
+  // Using Model.findOneAndUpdate() query
+  try {
+    const { id: taskID } = req.params;
+    // Model.findOneAndUpdate({conditions}, {udpate}, {options})
+    const task = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
+      // returnDocument: "after",
+      new: true,
+      runValidators: true,
+    });
+    if (!task) {
+      return res.status(404).json({
+        msg: `No task with ID: ${taskID} found. Database hasn\'t been updated`,
+      });
+    }
+    res.status(200).json({ task });
+  } catch (error) {
+    res.status(500).json({ success: false, msg: error });
+  }
+   */
 };
 
 // delete a single task
