@@ -9,9 +9,9 @@ Mongoose models provide several static helper functions for CRUD operations.
 const getAllTasks = async (req, res) => {
   try {
     const tasks = await Task.find({});
-    res.status(200).json({ tasks });
+    res.status(200).json({ status: "success", data: tasks });
   } catch (error) {
-    res.status(500).json({ msg: error });
+    res.status(500).json({ status: "server error", msg: error });
   }
 };
 

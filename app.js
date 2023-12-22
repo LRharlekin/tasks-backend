@@ -6,8 +6,10 @@ const tasksRouter = require("./routes/tasks");
 const connectDB = require("./db/connect");
 require("dotenv").config();
 
+const unknownRoute = require("./middleware/unknownRoute");
+
 // middleware
-// app.use(express.static('./public'));
+app.use(express.static("./public"));
 app.use(express.json());
 
 // routes
@@ -16,6 +18,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/tasks", tasksRouter);
+
+app.use(unknownRoute);
 
 const port = 5000;
 
