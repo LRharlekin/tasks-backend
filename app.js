@@ -23,7 +23,8 @@ app.use("/api/v1/tasks", tasksRouter);
 app.use(unknownRoute);
 app.use(errorHandlerMiddleware);
 
-const port = 5000;
+// App will run on PORT:5000 if port variable is undefined in process environment
+const port = process.env.PORT || 5000;
 
 const start = async () => {
   try {
