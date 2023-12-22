@@ -59,11 +59,35 @@ const createTask = async (req, res) => {
   }
 };
 
-// update a single task
+// edit a single task (PUT)
+const editTask = async (req, res) => {
+  // Using Model.findOneAndReplace() query
+  try {
+    const { id: taskID } = req.params;
+    // Model.findOneAndReplace({conditions}, {replacement}, {options})
+    const task = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
+      // returnDocument: "after",
+      new: true,
+      runValidators: true,
+      overwrite: true,
+    });
+    if (!task) {
+      return res.status(404).json({
+        msg: `No task with ID: ${taskID} found. Database hasn\'t been updated`,
+      });
+    }
+    res.status(200).json({ task });
+  } catch (error) {
+    res.status(500).json({ success: false, msg: error });
+  }
+};
+
+// update a single task (PATCH)
 const updateTask = async (req, res) => {
   // Using Model.findByIdAndUpdate() query
   try {
     const { id: taskID } = req.params;
+    // Model.findOneAndUpdate(id, {update}, {options})
     const task = await Task.findByIdAndUpdate(taskID, req.body, {
       new: true,
       runValidators: true,
@@ -82,7 +106,7 @@ const updateTask = async (req, res) => {
   // Using Model.findOneAndUpdate() query
   try {
     const { id: taskID } = req.params;
-    // Model.findOneAndUpdate({conditions}, {udpate}, {options})
+    // Model.findOneAndUpdate({conditions}, {update}, {options})
     const task = await Task.findOneAndUpdate({ _id: taskID }, req.body, {
       // returnDocument: "after",
       new: true,
@@ -137,6 +161,7 @@ module.exports = {
   getAllTasks,
   getTask,
   createTask,
+  editTask,
   updateTask,
   deleteTask,
 };
