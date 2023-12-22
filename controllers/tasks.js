@@ -1,8 +1,18 @@
 const Task = require("../models/Task");
 
+/* 
+Documentation for Mongoose Queries: https://mongoosejs.com/docs/queries.html
+Mongoose models provide several static helper functions for CRUD operations.
+ */
+
 // get all the tasks
-const getAllTasks = (req, res) => {
-  res.status(200).send("all tasks");
+const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({});
+    res.status(200).json({ tasks });
+  } catch (error) {
+    res.status(500).json({ msg: error });
+  }
 };
 
 // get a single task
@@ -20,7 +30,12 @@ const createTask = async (req, res) => {
     const taskToAdd = await Task.create(req.body);
     res.status(201).json({ taskToAdd });
   } catch (error) {
-    res.status(500).json({ msg: error });
+    if ((error.errors.name.name = "ValidatorError")) {
+      const errorMessage = error.errors.name.properties.message;
+      res.status(500).json({ msg: errorMessage });
+    } else {
+      res.status(500).json({ msg: error });
+    }
   }
 };
 

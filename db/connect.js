@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// return PRomise of db connection
+// return Promise of db connection
 const connectDB = (url) => {
   return mongoose.connect(url);
   // .then(() => {
