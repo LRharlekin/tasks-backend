@@ -1,4 +1,5 @@
 const Task = require("../models/Task");
+const asyncWrapper = require("../middleware/asyncWrapper");
 
 /* 
 Documentation for Mongoose Queries: https://mongoosejs.com/docs/queries.html
@@ -6,14 +7,21 @@ Mongoose models provide several static helper functions for CRUD operations.
  */
 
 // get all the tasks
-const getAllTasks = async (req, res) => {
+const getAllTasks = asyncWrapper(async (req, res) => {
+  const tasks = await Task.find({});
+  res.status(200).json({ status: "success", data: tasks });
+});
+
+/*
+const getAllTasks = async (req, res) => { 
   try {
     const tasks = await Task.find({});
     res.status(200).json({ status: "success", data: tasks });
   } catch (error) {
     res.status(500).json({ status: "server error", msg: error });
-  }
+  } 
 };
+  */
 
 // get a single task
 const getTask = async (req, res) => {
